@@ -7,14 +7,39 @@
     <groupId>org.example</groupId>
     <artifactId>swiftly-exercise</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <developers>
+        <developer>
+            <name>Elijah Zupancic</name>
+            <email>elijah@zupancic.name</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/dekobon/product-record-ingestor-exercise.git</connection>
+        <developerConnection>scm:git:git://github.com/dekobon/product-record-ingestor-exercise.git</developerConnection>
+        <url>git@github.com:dekobon/product-record-ingestor-exercise.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>github.com</system>
+        <url>https://github.com/dekobon/product-record-ingestor-exercise/issues</url>
+    </issueManagement>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>10</source>
                     <target>10</target>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
