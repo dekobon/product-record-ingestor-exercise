@@ -1,0 +1,22 @@
+dist: trusty
+language: java
+# Cache the Maven dependencies directory for faster builds
+cache:
+  directories:
+  - $HOME/.m2
+sudo: true
+
+before_install:
+- echo 'MAVEN_OPTS="-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"' >~/.mavenrc
+
+matrix:
+  fast_finish: true
+  include:
+  # unit tests (openjdk11)
+  - jdk: openjdk11
+    env:
+    - DESC="openjdk11 unit tests"
+    - CMD="mvn clean test"
+    - LANG=en_US.utf8
+
+script: echo ${CMD}; ${CMD}
