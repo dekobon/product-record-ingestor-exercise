@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dekobon/product-record-ingestor-exercise.svg?branch=travis)](https://travis-ci.org/dekobon/product-record-ingestor-exercise)
+[![Build Status](https://travis-ci.org/dekobon/product-record-ingestor-exercise.svg?branch=master)](https://travis-ci.org/dekobon/product-record-ingestor-exercise)
 # Product Information Ingestion Library Exercise
 
 ## Overview
