@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
+/**
+ * Metadata for regular for X field.
+ */
 public class RegularForXField extends BigIntegerField<ProductRecord> {
     public RegularForXField() {
     }

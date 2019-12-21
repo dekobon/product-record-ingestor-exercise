@@ -5,6 +5,7 @@ import com.useswiftly.ingestion.records.StringField;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Metadata for product size field.
  */
 public class ProductSizeField extends StringField<ProductRecord> {
     @Override

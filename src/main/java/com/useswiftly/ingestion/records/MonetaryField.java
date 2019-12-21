@@ -1,15 +1,14 @@
 package com.useswiftly.ingestion.records;
 
-import com.useswiftly.ingestion.product.fields.PromotionalSingularPriceField;
 import org.javamoney.moneta.FastMoney;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
-import java.util.StringJoiner;
 
 /**
+ * Record field with the data type {@link MonetaryAmount}.
  */
 public abstract class MonetaryField<RECORD_TYPE> implements Field<MonetaryAmount, RECORD_TYPE> {
     private final CurrencyUnit currencyUnit;
@@ -23,19 +22,21 @@ public abstract class MonetaryField<RECORD_TYPE> implements Field<MonetaryAmount
         return MonetaryAmount.class;
     }
 
-    protected MonetaryAmount convertStringToMonetaryAmount(final String currencyString) {
-        final BigDecimal amount = new BigDecimal(currencyString).movePointLeft(2);
-        return Monetary.getAmountFactory(FastMoney.class)
-                .setCurrency(currencyUnit).setNumber(amount).create().stripTrailingZeros();
+    public MonetaryAmount convertStringToMonetaryAmount(final String currencyString) {
+        try {
+            final BigDecimal amount = new BigDecimal(currencyString).movePointLeft(2);
+            return Monetary.getAmountFactory(FastMoney.class)
+                    .setCurrency(currencyUnit).setNumber(amount).create().stripTrailingZeros();
+        } catch (RuntimeException e) {
+               String msg = String.format("Problem parsing currency numeric " +
+                               "string value as currency [%s]",
+                       currencyString);
+               throw new RecordParseException(msg);
+        }
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", PromotionalSingularPriceField.class.getSimpleName() + "[", "]")
-                .add("startPositionInclusive=" + getStartPositionInclusive())
-                .add("endPositionExclusive=" + getEndPositionExclusive())
-                .add("name='" + getName() + "'")
-                .add("type=" + getType())
-                .toString();
+        return Field.toString(this);
     }
 }

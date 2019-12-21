@@ -8,7 +8,7 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 
 /**
- *
+ * Metadata for promotional singular price field.
  */
 public class PromotionalSingularPriceField extends MonetaryField<ProductRecord> {
     public PromotionalSingularPriceField(final CurrencyUnit currencyUnit) {

@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
+/**
+ * Metadata for product ID field.
+ */
 public class ProductIdField extends BigIntegerField<ProductRecord> {
     public ProductIdField() {
     }

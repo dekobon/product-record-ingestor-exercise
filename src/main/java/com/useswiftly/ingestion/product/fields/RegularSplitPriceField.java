@@ -8,7 +8,7 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 
 /**
- *
+ * Metadata for regular split price field.
  */
 public class RegularSplitPriceField extends MonetaryField<ProductRecord> {
     public RegularSplitPriceField(final CurrencyUnit currencyUnit) {

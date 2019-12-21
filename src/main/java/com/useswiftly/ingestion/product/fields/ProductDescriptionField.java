@@ -5,6 +5,7 @@ import com.useswiftly.ingestion.records.StringField;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Metadata for product description field.
  */
 public class ProductDescriptionField extends StringField<ProductRecord> {
     @Override

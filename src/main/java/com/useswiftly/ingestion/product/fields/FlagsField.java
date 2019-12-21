@@ -7,7 +7,7 @@ import com.useswiftly.ingestion.records.RecordParseException;
 import org.jetbrains.annotations.NotNull;
 
 /**
- *
+ * Metadata for product record flag field.
  */
 public class FlagsField implements Field<ProductRecordFlags, ProductRecord> {
     @Override
@@ -62,5 +62,10 @@ public class FlagsField implements Field<ProductRecordFlags, ProductRecord> {
         }
 
         record.setFlags(flags);
+    }
+
+    @Override
+    public String toString() {
+        return Field.toString(this);
     }
 }

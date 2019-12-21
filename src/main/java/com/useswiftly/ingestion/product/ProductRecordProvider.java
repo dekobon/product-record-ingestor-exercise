@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.function.Function;
 
 /**
- *
+ * Class that provides configured instances of {@link ProductRecord}.
  */
 public class ProductRecordProvider implements Provider<ProductRecord> {
     private final Function<ProductRecordFlags, BigDecimal> taxRateCalculatorFunction;

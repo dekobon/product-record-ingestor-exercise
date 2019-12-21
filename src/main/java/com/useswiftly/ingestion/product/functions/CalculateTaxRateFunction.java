@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 import java.util.function.Function;
 
 /**
- *
+ * Closure that calculates the applicable tax rate for a given
+ * {@link com.useswiftly.ingestion.product.ProductRecord} based on the
+ * record's {@link ProductRecordFlags}.
  */
 @Named("TaxRateCalculator")
 public class CalculateTaxRateFunction implements Function<ProductRecordFlags, BigDecimal> {

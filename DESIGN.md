@@ -115,3 +115,16 @@ I had some internal debate regarding whether or not the metadata methods and the
 the `convertAndAssignValueToRecord()` method were in violation of the single
 responsibility principle. However, putting that logic within the field seemed to
 be the cleanest representation without inflating the object graph.  
+
+### Exception handling
+
+Runtime and checked exceptions should be explicitly caught and chained to 
+exceptions with messages that contain the runtime values of key variables so
+that engineers debugging error reports can understand what state caused the
+problem.
+
+In the current implementation, any problem parsing the product records data
+file will result in the entire process stopping. Ideally, we would wrap the
+`ProductRecord` object in another object that would contain error state and
+allow the consumer to aggregate all of the parsing errors encountered so that
+a single error on a single record wouldn't cause the entire process to abort.

@@ -3,6 +3,9 @@ package com.useswiftly.ingestion.product;
 import com.useswiftly.ingestion.records.RecordFlags;
 
 /**
+ * Flags wrapper class that allows for accessing specific flags at specific
+ * positions via name Java beans in order to provide a human friendly interface
+ * for product record flags.
  */
 public class ProductRecordFlags extends RecordFlags {
     public static final int FLAG_COUNT = 9;

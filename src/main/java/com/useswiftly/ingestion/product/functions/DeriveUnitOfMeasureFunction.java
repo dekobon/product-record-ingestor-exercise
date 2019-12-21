@@ -7,7 +7,7 @@ import javax.inject.Named;
 import java.util.function.Function;
 
 /**
- *
+ * Closure that determines the correct unit of measure for a product record.
  */
 @Named("UnitOfMeasureDecider")
 public class DeriveUnitOfMeasureFunction implements Function<ProductRecordFlags, UnitOfMeasure> {

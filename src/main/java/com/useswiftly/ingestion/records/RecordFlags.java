@@ -5,17 +5,26 @@ import org.jetbrains.annotations.Range;
 import java.util.Arrays;
 
 /**
+ * Class that allows for an arbitrary number of boolean values to be logically
+ * grouped and accessed by position.
  */
 public class RecordFlags implements PositionalFlags {
     private final boolean[] values;
 
-    public RecordFlags(final int flagCount) {
+    public RecordFlags(@Range(from = 0, to = Integer.MAX_VALUE) final int flagCount) {
+        if (flagCount < 0) {
+            String msg = String.format("Total flag count must not be negative - " +
+                            "Flag count [%d] value is invalid",
+                    flagCount);
+            throw new IllegalArgumentException(msg);
+        }
+
         this.values = new boolean[flagCount];
     }
 
     @Override
     public boolean getFlagAtPosition(@Range(from = 0, to = Integer.MAX_VALUE) final int position) {
-        if (position > values.length) {
+        if (position < 0 || position > values.length) {
             String msg = String.format("Invalid flag position provided [%d] the valid " +
                     "values for flag positions are [0-%d]",
                     position, values.length - 1);
@@ -27,7 +36,7 @@ public class RecordFlags implements PositionalFlags {
 
     @Override
     public void setFlagAtPosition(@Range(from = 0, to = Integer.MAX_VALUE) final int position, final boolean flag) {
-        if (position > values.length) {
+        if (position < 0 || position > values.length) {
             String msg = String.format("Invalid flag position provided [%d] the valid " +
                             "values for flag positions are [0-%d]",
                     position, values.length - 1);

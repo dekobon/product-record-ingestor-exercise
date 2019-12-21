@@ -1,12 +1,9 @@
 package com.useswiftly.ingestion.records;
 
-import com.useswiftly.ingestion.product.fields.ProductIdField;
-
 import java.math.BigInteger;
-import java.util.StringJoiner;
 
 /**
- *
+ * Record field with the data type {@link BigInteger}.
  */
 public abstract class BigIntegerField<RECORD_TYPE> implements Field<BigInteger, RECORD_TYPE> {
     public BigIntegerField() {
@@ -17,10 +14,10 @@ public abstract class BigIntegerField<RECORD_TYPE> implements Field<BigInteger, 
         return BigInteger.class;
     }
 
-    protected BigInteger convertStringToBigInteger(final String numericString) {
+    public BigInteger convertStringToBigInteger(final String numericString) {
         try {
             return new BigInteger(numericString);
-        } catch (NumberFormatException e) {
+        } catch (RuntimeException e) {
             String msg = String.format("Unable to convert string to BigInteger " +
                             "for field [%s]. Offending String:\n%s",
                     getName(), numericString);
@@ -30,11 +27,6 @@ public abstract class BigIntegerField<RECORD_TYPE> implements Field<BigInteger, 
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", ProductIdField.class.getSimpleName() + "[", "]")
-                .add("startPositionInclusive=" + getStartPositionInclusive())
-                .add("endPositionExclusive=" + getEndPositionExclusive())
-                .add("name='" + getName() + "'")
-                .add("type=" + getType())
-                .toString();
+        return Field.toString(this);
     }
 }

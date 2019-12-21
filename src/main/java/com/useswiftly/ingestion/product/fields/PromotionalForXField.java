@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
+/**
+ * Metadata for promotional for x field.
+ */
 public class PromotionalForXField extends BigIntegerField<ProductRecord> {
     public PromotionalForXField() {
     }

@@ -8,7 +8,7 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 
 /**
- *
+ * Metadata for regular singular price field.
  */
 public class RegularSingularPriceField extends MonetaryField<ProductRecord> {
     public RegularSingularPriceField(final CurrencyUnit currencyUnit) {

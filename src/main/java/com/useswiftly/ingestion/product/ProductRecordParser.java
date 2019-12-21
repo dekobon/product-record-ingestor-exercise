@@ -10,10 +10,23 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
+ * Closure that encapsulates the per-line record parsing logic for the product
+ * record data file such that it can be used within a Java 8 stream.
  */
 public class ProductRecordParser implements Function<String, ProductRecord> {
+    /**
+     * List of fields to be parsed from data file.
+     */
     private final List<Field<?, ProductRecord>> fieldsToParse;
+
+    /**
+     * Total size in characters of a single line in the record data file.
+     */
     private final int recordSize;
+
+    /**
+     * Provider class that provides new pre-injected instances of {@link ProductRecord}.
+     */
     private final Provider<ProductRecord> productRecordProvider;
 
     @Inject
@@ -24,6 +37,12 @@ public class ProductRecordParser implements Function<String, ProductRecord> {
         this.recordSize = calculateRecordSize();
     }
 
+    /**
+     * Calculates the expected line length by finding the field with the boundary
+     * furthest to the right.
+     *
+     * @return record size in characters
+     */
     protected int calculateRecordSize() {
         final int recordSize;
 

@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 import java.util.function.Function;
 
 /**
- *
+ * Domain entity object that represents a single product record.
  */
 @SuppressWarnings("UnusedReturnValue")
 public class ProductRecord implements Record {
@@ -31,10 +31,20 @@ public class ProductRecord implements Record {
      * as a closure so that the business logic is decoupled.
      */
     private final Function<ProductRecordFlags, BigDecimal> taxRateCalculatorFunction;
+
+    /**
+     * Function that dynamically determines what unit of measure is associated with
+     * a given product record.
+     */
     private final Function<ProductRecordFlags, UnitOfMeasure> unitOfMeasureDeciderFunction;
 
-    public ProductRecord(final Function<ProductRecordFlags, BigDecimal> taxRateCalculator,
-                         final Function<ProductRecordFlags, UnitOfMeasure> unitOfMeasureDeciderFunction) {
+    ProductRecord() {
+        this.taxRateCalculatorFunction = null;
+        this.unitOfMeasureDeciderFunction = null;
+    }
+
+    public ProductRecord(@Nullable final Function<ProductRecordFlags, BigDecimal> taxRateCalculator,
+                         @Nullable final Function<ProductRecordFlags, UnitOfMeasure> unitOfMeasureDeciderFunction) {
         this.taxRateCalculatorFunction = taxRateCalculator;
         this.unitOfMeasureDeciderFunction = unitOfMeasureDeciderFunction;
     }
@@ -152,7 +162,7 @@ public class ProductRecord implements Record {
         throw new UnsupportedOperationException();
     }
 
-    public MonetaryAmount cacluatePromotionalDisplayPrice() {
+    public MonetaryAmount calculatePromotionalDisplayPrice() {
         throw new UnsupportedOperationException();
     }
 
@@ -160,19 +170,38 @@ public class ProductRecord implements Record {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Determines if the unit of measure for the current product record. See
+     * {@link com.useswiftly.ingestion.product.functions.DeriveUnitOfMeasureFunction}
+     * for the relevant business logic.
+     *
+     * @return null if unknown or enum representing the unit of measure associated with the current record
+     */
     @Nullable
     public UnitOfMeasure deriveUnitOfMeasure() {
-        return unitOfMeasureDeciderFunction.apply(getFlags());
+        if (unitOfMeasureDeciderFunction != null) {
+            return unitOfMeasureDeciderFunction.apply(getFlags());
+        } else {
+            return null;
+        }
     }
 
     /**
      * Retrieves the <em>current</em> associated tax rate for this item. This
      * value may change at any time and caution should be paid if considering
-     * to persist it.
+     * to persist it. See
+     * {@link com.useswiftly.ingestion.product.functions.CalculateTaxRateFunction}
+     * for the relevant business logic.
+     *
+     * @return null if unknown or tax rate as a decimal value
      */
     @Nullable
     public BigDecimal calculateTaxRate() {
-        return taxRateCalculatorFunction.apply(getFlags());
+        if (taxRateCalculatorFunction != null) {
+            return taxRateCalculatorFunction.apply(getFlags());
+        } else {
+            return null;
+        }
     }
 
     @Override
