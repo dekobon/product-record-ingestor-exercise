@@ -15,8 +15,8 @@ matrix:
   # unit tests (openjdk11)
   - jdk: openjdk11
     env:
-    - DESC="openjdk11 unit tests"
-    - CMD="mvn clean test"
+    - DESC="openjdk11 tests"
+    - CMD="mvn clean verify"
     - LANG=en_US.utf8
 
 script: echo ${CMD}; ${CMD}
