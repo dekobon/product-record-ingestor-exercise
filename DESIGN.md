@@ -1,5 +1,15 @@
 # Product Information Ingestion Library Design
 
+## Application Design Overview
+
+The product record parser works by incrementally reading lines from a character 
+stream reader as a Java stream instance is iterated. Each iteration returns a
+single ProductRecord object that maps to the data of a single line of the record
+data (file).
+
+Business logic for each record is accessible as methods on the ProductRecord
+class.   
+
 ## First Principles
 
 In this project, certain aspects of extensibility have been deliberately 
