@@ -11,6 +11,7 @@ import java.util.Arrays;
 public class RecordFlags implements PositionalFlags {
     private final boolean[] values;
 
+    @SuppressWarnings("ConstantConditions")
     public RecordFlags(@Range(from = 0, to = Integer.MAX_VALUE) final int flagCount) {
         if (flagCount < 0) {
             String msg = String.format("Total flag count must not be negative - " +
@@ -22,6 +23,7 @@ public class RecordFlags implements PositionalFlags {
         this.values = new boolean[flagCount];
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean getFlagAtPosition(@Range(from = 0, to = Integer.MAX_VALUE) final int position) {
         if (position < 0 || position > values.length) {
@@ -34,6 +36,7 @@ public class RecordFlags implements PositionalFlags {
         return values[position];
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void setFlagAtPosition(@Range(from = 0, to = Integer.MAX_VALUE) final int position, final boolean flag) {
         if (position < 0 || position > values.length) {

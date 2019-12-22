@@ -7,7 +7,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.useswiftly.ingestion.product.ProductRecord;
 import com.useswiftly.ingestion.product.ProductRecordFlags;
-import com.useswiftly.ingestion.product.ProductRecordProvider;
 import com.useswiftly.ingestion.product.UnitOfMeasure;
 import com.useswiftly.ingestion.product.fields.FlagsField;
 import com.useswiftly.ingestion.product.fields.ProductDescriptionField;
@@ -22,13 +21,21 @@ import com.useswiftly.ingestion.product.fields.RegularSplitPriceField;
 import com.useswiftly.ingestion.product.functions.CalculateTaxRateFunction;
 import com.useswiftly.ingestion.product.functions.DeriveUnitOfMeasureFunction;
 import com.useswiftly.ingestion.records.Field;
+import org.javamoney.moneta.format.CurrencyStyle;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import javax.money.MonetaryRounding;
+import javax.money.RoundingQueryBuilder;
+import javax.money.format.AmountFormatQueryBuilder;
+import javax.money.format.MonetaryAmountFormat;
+import javax.money.format.MonetaryFormats;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 /**
@@ -44,9 +51,25 @@ public class ProductRecordIngestorModule implements Module {
         // The character set for the parse can be configured here
         binder.bind(Charset.class).toInstance(StandardCharsets.US_ASCII);
 
+        // The local to use for currency formatting can be configured here
+        final Locale locale = Locale.US;
+
         // The currency to use for the prices parsed from the record file can be configured here
         final CurrencyUnit currencyUnit = Monetary.getCurrency("USD");
         binder.bind(CurrencyUnit.class).toInstance(currencyUnit);
+
+        // The currency format for display prices can be configured here
+        final MonetaryAmountFormat format = MonetaryFormats.getAmountFormat(
+                AmountFormatQueryBuilder.of(locale).set(CurrencyStyle.SYMBOL).build());
+        binder.bind(MonetaryAmountFormat.class).toInstance(format);
+
+        // The rounding method for currencies can be configured here
+        // This rounds down and cuts off the trailing decimals to 4 places
+        final MonetaryRounding rounding = Monetary.getRounding(
+                RoundingQueryBuilder.of()
+                        .setScale(4)
+                        .set(RoundingMode.HALF_DOWN).build());
+        binder.bind(MonetaryRounding.class).toInstance(rounding);
 
         // The tax rate settings can be configured here
         binder.bind(BigDecimal.class).annotatedWith(Names.named("TaxRate"))
@@ -81,7 +104,7 @@ public class ProductRecordIngestorModule implements Module {
         binder.bind(new TypeLiteral<List<Field<?, ProductRecord>>>(){})
                 .toInstance(fieldsToParse);
 
-        // Ensure that new ProductRecord objects are created by a provider
-        binder.bind(ProductRecord.class).toProvider(ProductRecordProvider.class);
+        // Allow new ProductRecord objects to have their dependencies injected
+        binder.bind(ProductRecord.class);
     }
 }

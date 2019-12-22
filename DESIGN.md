@@ -128,3 +128,11 @@ file will result in the entire process stopping. Ideally, we would wrap the
 `ProductRecord` object in another object that would contain error state and
 allow the consumer to aggregate all of the parsing errors encountered so that
 a single error on a single record wouldn't cause the entire process to abort.
+
+### Nullity
+
+In the ProductRecord class many of the fields are Nullable because I wanted to
+allow for the domain entity to be easily testable in parts without having to
+populate all values. However, this does come with the risk of having to handle
+more potential null values downstream in the application. This is an aspect of
+the design, that I would give more thought to in a production application. 

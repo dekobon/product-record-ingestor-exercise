@@ -1,11 +1,17 @@
 package com.useswiftly.ingestion.product;
 
 import com.useswiftly.ingestion.records.Record;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.money.MonetaryAmount;
+import javax.money.MonetaryRounding;
+import javax.money.format.MonetaryAmountFormat;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
 
@@ -38,15 +44,21 @@ public class ProductRecord implements Record {
      */
     private final Function<ProductRecordFlags, UnitOfMeasure> unitOfMeasureDeciderFunction;
 
-    ProductRecord() {
-        this.taxRateCalculatorFunction = null;
-        this.unitOfMeasureDeciderFunction = null;
-    }
+    private final MonetaryAmountFormat displayPriceFormat;
 
-    public ProductRecord(@Nullable final Function<ProductRecordFlags, BigDecimal> taxRateCalculator,
-                         @Nullable final Function<ProductRecordFlags, UnitOfMeasure> unitOfMeasureDeciderFunction) {
+    private final MonetaryRounding rounding;
+
+    @Inject
+    public ProductRecord(@Named("TaxRateCalculator")
+                         final Function<ProductRecordFlags, BigDecimal> taxRateCalculator,
+                         @Named("UnitOfMeasureDecider")
+                         final Function<ProductRecordFlags, UnitOfMeasure> unitOfMeasureDeciderFunction,
+                         final MonetaryAmountFormat displayPriceFormat,
+                         final MonetaryRounding rounding) {
         this.taxRateCalculatorFunction = taxRateCalculator;
         this.unitOfMeasureDeciderFunction = unitOfMeasureDeciderFunction;
+        this.displayPriceFormat = displayPriceFormat;
+        this.rounding = rounding;
     }
 
     @Nullable
@@ -115,6 +127,10 @@ public class ProductRecord implements Record {
     }
 
     public ProductRecord setRegularForX(@Nullable final BigInteger regularForX) {
+        if (regularForX != null && BigInteger.ZERO.compareTo(regularForX) > 0) {
+            throw new IllegalArgumentException("For X values must be zero or greater");
+        }
+
         this.regularForX = regularForX;
         return this;
     }
@@ -125,6 +141,10 @@ public class ProductRecord implements Record {
     }
 
     public ProductRecord setPromotionalForX(@Nullable final BigInteger promotionalForX) {
+        if (regularForX != null && BigInteger.ZERO.compareTo(regularForX) > 0) {
+            throw new IllegalArgumentException("For X values must be zero or greater");
+        }
+
         this.promotionalForX = promotionalForX;
         return this;
     }
@@ -154,18 +174,82 @@ public class ProductRecord implements Record {
      * this object and/or providers and are not persisted within this object.
      * ====================================================================== */
 
-    public MonetaryAmount calculateDisplayPrice() {
-        throw new UnsupportedOperationException();
+    @NotNull
+    public String regularDisplayPrice() {
+        /* If either price is null, it indicates that we don't have a properly
+         * populated ProductRecord object and it is likely a test instance.
+         * In these cases, we just return a "unknown" string because we aren't
+         * following the expected contract. */
+        if (getRegularSingularPrice() == null || getRegularSplitPrice() == null) {
+            return "unknown";
+        }
+
+        /* Both prices being zero is in violation of the contract we have for a
+         * valid input format. */
+        if (getRegularSingularPrice().isZero() && getRegularSplitPrice().isZero()) {
+            throw new IllegalStateException("Either singular price or split " +
+                    "price must be enabled");
+        }
+
+        // A non-zero singular price will be displayed as-is
+        if (!getRegularSingularPrice().isZero()) {
+            return displayPriceFormat
+                    .format(getRegularSingularPrice().with(rounding));
+        // A X for <amount> price will be formatted and displayed
+        }
+
+        if (!getRegularSplitPrice().isZero()) {
+            String formatted = displayPriceFormat.format(
+                    getRegularSplitPrice().with(rounding));
+            // Perhaps, this format should be externalized for localization
+            return String.format("%d for %s", getRegularForX(), formatted);
+        }
+
+        throw new IllegalStateException("Either singular price or split " +
+                "price must be enabled - neither were enabled");
     }
 
+    @Nullable
     public MonetaryAmount calculateRegularCalculatorPrice() {
-        throw new UnsupportedOperationException();
+        /* If either price is null, it indicates that we don't have a properly
+         * populated ProductRecord object and it is likely a test instance.
+         * In these cases, we just return a null because we aren't
+         * following the expected contract. */
+        if (getRegularSingularPrice() == null || getRegularSplitPrice() == null) {
+            return null;
+        }
+
+        /* Both prices being zero is in violation of the contract we have for a
+         * valid input format. */
+        if (getRegularSingularPrice().isPositive() && getRegularSplitPrice().isPositive()) {
+            throw new IllegalStateException("Either singular price or split " +
+                    "price must be enabled");
+        }
+
+        final MonetaryAmount calculatedPrice;
+
+        if (!getRegularSingularPrice().isZero()) {
+            calculatedPrice = getRegularSingularPrice().with(rounding);
+        } else if (!getRegularSplitPrice().isZero()) {
+            Objects.requireNonNull(getRegularForX(), "Regular for " +
+                    "X must not be null when split price is present");
+
+            calculatedPrice = getRegularSplitPrice()
+                    .divide(getRegularForX()).with(rounding).stripTrailingZeros();
+        } else {
+            throw new IllegalStateException("Either singular price or split " +
+                    "price must be enabled - neither were enabled");
+        }
+
+        return calculatedPrice;
     }
 
+    @Nullable
     public MonetaryAmount calculatePromotionalDisplayPrice() {
         throw new UnsupportedOperationException();
     }
 
+    @Nullable
     public MonetaryAmount calculatePromotionalCalculatorPrice() {
         throw new UnsupportedOperationException();
     }
@@ -219,6 +303,8 @@ public class ProductRecord implements Record {
                 .add("productSize='" + productSize + "'")
                 .add("unitOfMeasure=" + deriveUnitOfMeasure())
                 .add("taxRate=" + calculateTaxRate())
+                .add("displayPrice=" + regularDisplayPrice())
+                .add("regularCalculatorPrice=" + calculateRegularCalculatorPrice())
                 .toString();
     }
 }
