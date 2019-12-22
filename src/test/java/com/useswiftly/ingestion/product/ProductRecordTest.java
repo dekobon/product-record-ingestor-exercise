@@ -27,7 +27,9 @@ public class ProductRecordTest {
                     .setScale(4)
                     .set(RoundingMode.HALF_DOWN).build());
 
-    public void displayPriceForSingularPositivePriceFormatsCorrectly() {
+    // Regular price tests
+
+    public void regularDisplayPriceForSingularPositivePriceFormatsCorrectly() {
         final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(345.49, CURRENCY));
@@ -37,7 +39,7 @@ public class ProductRecordTest {
         Assert.assertEquals(actual, expected);
     }
 
-    public void displayPriceForSingularNegativePriceFormatsCorrectly() {
+    public void regularDisplayPriceForSingularNegativePriceFormatsCorrectly() {
         final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(-12.00, CURRENCY));
@@ -47,7 +49,7 @@ public class ProductRecordTest {
         Assert.assertEquals(actual, expected);
     }
 
-    public void displayPriceForSingularPriceWith5DecimalsFormatsCorrectly() {
+    public void regularDisplayPriceForSingularPriceWith5DecimalsFormatsCorrectly() {
         final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(13312.12945, CURRENCY));
@@ -57,7 +59,7 @@ public class ProductRecordTest {
         Assert.assertEquals(actual, expected);
     }
 
-    public void displayPriceForPositiveSplitPriceFormatsCorrectly() {
+    public void regularDisplayPriceForPositiveSplitPriceFormatsCorrectly() {
         final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
                 .setRegularForX(BigInteger.valueOf(2L))
                 .setRegularSplitPrice(FastMoney.of(10.99, CURRENCY))
@@ -68,7 +70,7 @@ public class ProductRecordTest {
         Assert.assertEquals(actual, expected);
     }
 
-    public void displayPriceForNegativeSplitPriceFormatsCorrectly() {
+    public void regularDisplayPriceForNegativeSplitPriceFormatsCorrectly() {
         final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
                 .setRegularForX(BigInteger.valueOf(2L))
                 .setRegularSplitPrice(FastMoney.of(-12230.99, CURRENCY))
@@ -116,6 +118,102 @@ public class ProductRecordTest {
                 .setRegularSplitPrice(FastMoney.of(10, CURRENCY))
                 .setRegularSingularPrice(FastMoney.zero(CURRENCY));
         final MonetaryAmount actual = record.calculateRegularCalculatorPrice();
+        final MonetaryAmount expected = FastMoney.of(3.3333, CURRENCY);
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    // Promotional price tests
+
+    public void promotionalDisplayPriceForSingularPositivePriceFormatsCorrectly() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.of(345.49, CURRENCY));
+        final String expected = "$345.49";
+        final String actual = record.promotionalDisplayPrice();
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void promotionalDisplayPriceForSingularNegativePriceFormatsCorrectly() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.of(-12.00, CURRENCY));
+        final String expected = "$-12.00";
+        final String actual = record.promotionalDisplayPrice();
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void promotionalDisplayPriceForSingularPriceWith5DecimalsFormatsCorrectly() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.of(13312.12945, CURRENCY));
+        final String expected = "$13,312.13";
+        final String actual = record.promotionalDisplayPrice();
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void promotionalDisplayPriceForPositiveSplitPriceFormatsCorrectly() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalForX(BigInteger.valueOf(2L))
+                .setPromotionalSplitPrice(FastMoney.of(10.99, CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
+        final String expected = "2 for $10.99";
+        final String actual = record.promotionalDisplayPrice();
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void promotionalDisplayPriceForNegativeSplitPriceFormatsCorrectly() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalForX(BigInteger.valueOf(2L))
+                .setPromotionalSplitPrice(FastMoney.of(-12230.99, CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
+        final String expected = "2 for $-12,230.99";
+        final String actual = record.promotionalDisplayPrice();
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void canCalculatePromotionalCalculatorPriceForSingularPriceWithNoRoundingNeeded() {
+        final MonetaryAmount expected = FastMoney.of(345.49, CURRENCY);
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
+                .setPromotionalSingularPrice(expected);
+        final MonetaryAmount actual = record.calculatePromotionalCalculatorPrice();
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void canCalculatePromotionalCalculatorPriceForSingularPriceWithRoundingNeeded() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.of(345.42949, CURRENCY));
+        final MonetaryAmount actual = record.calculatePromotionalCalculatorPrice();
+        final MonetaryAmount expected = FastMoney.of(345.4295, CURRENCY);
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void canCalculatePromotionalCalculatorPriceForSplitPriceWithNoRoundingNeeded() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalForX(BigInteger.valueOf(3))
+                .setPromotionalSplitPrice(FastMoney.of(9, CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
+        final MonetaryAmount actual = record.calculatePromotionalCalculatorPrice();
+        final MonetaryAmount expected = FastMoney.of(3.00, CURRENCY);
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    public void canCalculatePromotionalCalculatorPriceForSplitPriceWithRoundingNeeded() {
+        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+                .setPromotionalForX(BigInteger.valueOf(3))
+                .setPromotionalSplitPrice(FastMoney.of(10, CURRENCY))
+                .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
+        final MonetaryAmount actual = record.calculatePromotionalCalculatorPrice();
         final MonetaryAmount expected = FastMoney.of(3.3333, CURRENCY);
 
         Assert.assertEquals(actual, expected);
