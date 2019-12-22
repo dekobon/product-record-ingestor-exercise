@@ -6,6 +6,7 @@ import com.useswiftly.ingestion.product.ProductRecord;
 import com.useswiftly.ingestion.product.ProductRecordFileParser;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -17,6 +18,8 @@ import java.util.stream.Stream;
  * application to run as a stand-alone program.
  */
 public class Application {
+    static final Injector injector = Guice.createInjector(new ProductRecordIngestorModule());
+
     /**
      * Entry point into the application
      * @param argv String array with the first element containing the path to the file to parse
@@ -29,13 +32,8 @@ public class Application {
         }
 
         final Path path = openFileAtPath(argv[0]);
-        final Injector injector = Guice.createInjector(new ProductRecordIngestorModule());
-        final ProductRecordFileParser parser =
-                injector.getInstance(ProductRecordFileParser.class);
-        final Charset charset = injector.getInstance(Charset.class);
 
-        try (final Reader source = Files.newBufferedReader(path, charset);
-             final Stream<ProductRecord> records = parser.parse(source)) {
+        try (final Stream<ProductRecord> records = parsePathForRecordsData(path)) {
             records.forEach(System.out::println);
 
             /* If we needed to turn this stream into a collection as written in
@@ -46,6 +44,26 @@ public class Application {
             e.printStackTrace(System.err);
             System.exit(1);
         }
+    }
+
+    static Stream<ProductRecord> parsePathForRecordsData(final Path path)
+            throws IOException {
+        final ProductRecordFileParser parser =
+                injector.getInstance(ProductRecordFileParser.class);
+        final Charset charset = injector.getInstance(Charset.class);
+
+        final Reader source = Files.newBufferedReader(path, charset);
+        final Stream<ProductRecord> records = parser.parse(source);
+
+        return records.onClose(() -> {
+            try {
+                source.close();
+            } catch (IOException e) {
+                System.err.printf("Unable to close records at path: %s\n",
+                        path);
+                e.printStackTrace(System.err);
+            }
+        });
     }
 
     private static Path openFileAtPath(final String filePath) {
