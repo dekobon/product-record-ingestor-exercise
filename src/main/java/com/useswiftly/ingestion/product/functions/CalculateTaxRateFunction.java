@@ -23,6 +23,7 @@ public class CalculateTaxRateFunction implements Function<ProductRecordFlags, Bi
         this.taxRateProvider = taxRateProvider;
     }
 
+    @Nullable
     @Override
     public BigDecimal apply(@Nullable final ProductRecordFlags flags) {
         if (flags == null) {

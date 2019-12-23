@@ -2,6 +2,7 @@ package com.useswiftly.ingestion.product;
 
 import com.useswiftly.ingestion.records.Field;
 import com.useswiftly.ingestion.records.RecordParseException;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -57,7 +58,7 @@ public class ProductRecordParser implements Function<String, ProductRecord> {
     }
 
     @Override
-    public ProductRecord apply(final String line) {
+    public ProductRecord apply(@NotNull final String line) {
         if (line.length() != recordSize) {
             String msg = String.format("Expected a record length of [%d], " +
                     "actual length of record was [%d] characters. Line contents:\n%s",
