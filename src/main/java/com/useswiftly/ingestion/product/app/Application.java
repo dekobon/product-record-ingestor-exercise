@@ -26,8 +26,8 @@ public class Application {
      */
     public static void main(final String[] argv) {
         if (argv.length == 0) {
-            System.err.println("Missing path to the data file as the" +
-                    "first program argument");
+            System.err.println("com.useswiftly.ingestion.product.app.Application: " +
+                    "The first argument must be the path to the product record data file");
             System.exit(1);
         }
 
