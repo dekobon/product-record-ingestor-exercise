@@ -7,6 +7,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.useswiftly.ingestion.product.ProductRecord;
 import com.useswiftly.ingestion.product.ProductRecordFlags;
+import com.useswiftly.ingestion.product.ProductRecordFormatter;
 import com.useswiftly.ingestion.product.UnitOfMeasure;
 import com.useswiftly.ingestion.product.fields.FlagsField;
 import com.useswiftly.ingestion.product.fields.ProductDescriptionField;
@@ -21,6 +22,7 @@ import com.useswiftly.ingestion.product.fields.RegularSplitPriceField;
 import com.useswiftly.ingestion.product.functions.CalculateTaxRateFunction;
 import com.useswiftly.ingestion.product.functions.DeriveUnitOfMeasureFunction;
 import com.useswiftly.ingestion.records.Field;
+import com.useswiftly.ingestion.records.RecordFormattable;
 import org.javamoney.moneta.format.CurrencyStyle;
 
 import javax.money.CurrencyUnit;
@@ -103,6 +105,10 @@ public class ProductRecordIngestorModule implements Module {
                 );
         binder.bind(new TypeLiteral<List<Field<?, ProductRecord>>>(){})
                 .toInstance(fieldsToParse);
+
+        // The record output formatting can be specified here
+        binder.bind(new TypeLiteral<RecordFormattable<ProductRecord>>() {})
+                .to(ProductRecordFormatter.class).in(Singleton.class);
 
         // Allow new ProductRecord objects to have their dependencies injected
         binder.bind(ProductRecord.class);
