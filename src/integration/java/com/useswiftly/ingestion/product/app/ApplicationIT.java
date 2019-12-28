@@ -18,16 +18,16 @@ import java.util.stream.Stream;
 @Test
 public class ApplicationIT {
     private ProductRecord instance(final long productId,
-                                   final String description,
-                                   final double regularSingularPrice,
-                                   final double promotionalSingularPrice,
-                                   final double regularSplitPrice,
-                                   final double promotionalSplitPrice,
-                                   final int regularForX,
-                                   final int promotionalForX,
-                                   final boolean isPerWeight,
-                                   final boolean isTaxable,
-                                   final String productSize) {
+                                       final String description,
+                                       final double regularSingularPrice,
+                                       final double promotionalSingularPrice,
+                                       final double regularSplitPrice,
+                                       final double promotionalSplitPrice,
+                                       final int regularForX,
+                                       final int promotionalForX,
+                                       final boolean isPerWeight,
+                                       final boolean isTaxable,
+                                       final String productSize) {
         final ProductRecordFlags flags = new ProductRecordFlags()
                 .setPerWeightItem(isPerWeight).setTaxableItem(isTaxable);
         return instance(productId, description, regularSingularPrice,
@@ -36,15 +36,15 @@ public class ApplicationIT {
     }
 
     private ProductRecord instance(final long productId,
-                                   final String description,
-                                   final double regularSingularPrice,
-                                   final double promotionalSingularPrice,
-                                   final double regularSplitPrice,
-                                   final double promotionalSplitPrice,
-                                   final int regularForX,
-                                   final int promotionalForX,
-                                   final ProductRecordFlags flags,
-                                   final String productSize) {
+                                       final String description,
+                                       final double regularSingularPrice,
+                                       final double promotionalSingularPrice,
+                                       final double regularSplitPrice,
+                                       final double promotionalSplitPrice,
+                                       final int regularForX,
+                                       final int promotionalForX,
+                                       final ProductRecordFlags flags,
+                                       final String productSize) {
         final Injector injector = Application.injector;
         final CurrencyUnit currencyUnit = injector.getInstance(CurrencyUnit.class);
 

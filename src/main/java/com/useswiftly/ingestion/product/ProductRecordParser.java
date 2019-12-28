@@ -68,6 +68,9 @@ public class ProductRecordParser implements Function<String, ProductRecord> {
 
         final ProductRecord record = productRecordProvider.get();
 
+        /* Assign and populate all fields onto a record object based on the
+         * field metadata. This approach makes it easy for us to add/change/remove
+         * fields from a record. */
         for (final Field<?, ProductRecord> field : fieldsToParse) {
             final String substring = line.substring(
                     field.getStartPositionInclusive(), field.getEndPositionExclusive());

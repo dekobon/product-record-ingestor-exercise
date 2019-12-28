@@ -8,6 +8,7 @@ import com.google.inject.name.Names;
 import com.useswiftly.ingestion.product.ProductRecord;
 import com.useswiftly.ingestion.product.ProductRecordFlags;
 import com.useswiftly.ingestion.product.ProductRecordFormatter;
+import com.useswiftly.ingestion.product.ProductRecordImpl;
 import com.useswiftly.ingestion.product.UnitOfMeasure;
 import com.useswiftly.ingestion.product.fields.FlagsField;
 import com.useswiftly.ingestion.product.fields.ProductDescriptionField;
@@ -110,7 +111,7 @@ public class ProductRecordIngestorModule implements Module {
         binder.bind(new TypeLiteral<RecordFormattable<ProductRecord>>() {})
                 .to(ProductRecordFormatter.class).in(Singleton.class);
 
-        // Allow new ProductRecord objects to have their dependencies injected
-        binder.bind(ProductRecord.class);
+        // Bind all ProductRecord to ProductRecordImpl and inject all dependencies
+        binder.bind(ProductRecord.class).to(ProductRecordImpl.class);
     }
 }

@@ -4,7 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test
-public class ProductRecordFlagsTest {
+public class ProductRecordImplFlagsTest {
     public void canReadTaxableItemFromFlag() {
         final ProductRecordFlags flags = new ProductRecordFlags();
         flags.setFlagAtPosition(4, true);

@@ -18,7 +18,7 @@ import java.math.RoundingMode;
 import java.util.Locale;
 
 @Test
-public class ProductRecordTest {
+public class ProductRecordImplTest {
     private static final CurrencyUnit CURRENCY = Monetary.getCurrency("USD");
     private static final MonetaryAmountFormat FORMAT = MonetaryFormats.getAmountFormat(
             AmountFormatQueryBuilder.of(Locale.US).set(CurrencyStyle.SYMBOL).build());
@@ -30,7 +30,7 @@ public class ProductRecordTest {
     // Regular price tests
 
     public void regularDisplayPriceForSingularPositivePriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(345.49, CURRENCY));
         final String expected = "$345.49";
@@ -40,7 +40,7 @@ public class ProductRecordTest {
     }
 
     public void regularDisplayPriceForSingularNegativePriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(-12.00, CURRENCY));
         final String expected = "$-12.00";
@@ -50,7 +50,7 @@ public class ProductRecordTest {
     }
 
     public void regularDisplayPriceForSingularPriceWith5DecimalsFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(13312.12945, CURRENCY));
         final String expected = "$13,312.13";
@@ -60,7 +60,7 @@ public class ProductRecordTest {
     }
 
     public void regularDisplayPriceForPositiveSplitPriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularForX(BigInteger.valueOf(2L))
                 .setRegularSplitPrice(FastMoney.of(10.99, CURRENCY))
                 .setRegularSingularPrice(FastMoney.zero(CURRENCY));
@@ -71,7 +71,7 @@ public class ProductRecordTest {
     }
 
     public void regularDisplayPriceForNegativeSplitPriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularForX(BigInteger.valueOf(2L))
                 .setRegularSplitPrice(FastMoney.of(-12230.99, CURRENCY))
                 .setRegularSingularPrice(FastMoney.zero(CURRENCY));
@@ -83,7 +83,7 @@ public class ProductRecordTest {
 
     public void canCalculateRegularCalculatorPriceForSingularPriceWithNoRoundingNeeded() {
         final MonetaryAmount expected = FastMoney.of(345.49, CURRENCY);
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(expected);
         final MonetaryAmount actual = record.calculateRegularCalculatorPrice();
@@ -92,7 +92,7 @@ public class ProductRecordTest {
     }
 
     public void canCalculateRegularCalculatorPriceForSingularPriceWithRoundingNeeded() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularSplitPrice(FastMoney.zero(CURRENCY))
                 .setRegularSingularPrice(FastMoney.of(345.42949, CURRENCY));
         final MonetaryAmount actual = record.calculateRegularCalculatorPrice();
@@ -102,7 +102,7 @@ public class ProductRecordTest {
     }
 
     public void canCalculateRegularCalculatorPriceForSplitPriceWithNoRoundingNeeded() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularForX(BigInteger.valueOf(3))
                 .setRegularSplitPrice(FastMoney.of(9, CURRENCY))
                 .setRegularSingularPrice(FastMoney.zero(CURRENCY));
@@ -113,7 +113,7 @@ public class ProductRecordTest {
     }
 
     public void canCalculateRegularCalculatorPriceForSplitPriceWithRoundingNeeded() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setRegularForX(BigInteger.valueOf(3))
                 .setRegularSplitPrice(FastMoney.of(10, CURRENCY))
                 .setRegularSingularPrice(FastMoney.zero(CURRENCY));
@@ -126,7 +126,7 @@ public class ProductRecordTest {
     // Promotional price tests
 
     public void promotionalDisplayPriceForSingularPositivePriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.of(345.49, CURRENCY));
         final String expected = "$345.49";
@@ -136,7 +136,7 @@ public class ProductRecordTest {
     }
 
     public void promotionalDisplayPriceForSingularNegativePriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.of(-12.00, CURRENCY));
         final String expected = "$-12.00";
@@ -146,7 +146,7 @@ public class ProductRecordTest {
     }
 
     public void promotionalDisplayPriceForSingularPriceWith5DecimalsFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.of(13312.12945, CURRENCY));
         final String expected = "$13,312.13";
@@ -156,7 +156,7 @@ public class ProductRecordTest {
     }
 
     public void promotionalDisplayPriceForPositiveSplitPriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalForX(BigInteger.valueOf(2L))
                 .setPromotionalSplitPrice(FastMoney.of(10.99, CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
@@ -167,7 +167,7 @@ public class ProductRecordTest {
     }
 
     public void promotionalDisplayPriceForNegativeSplitPriceFormatsCorrectly() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalForX(BigInteger.valueOf(2L))
                 .setPromotionalSplitPrice(FastMoney.of(-12230.99, CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
@@ -179,7 +179,7 @@ public class ProductRecordTest {
 
     public void canCalculatePromotionalCalculatorPriceForSingularPriceWithNoRoundingNeeded() {
         final MonetaryAmount expected = FastMoney.of(345.49, CURRENCY);
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
                 .setPromotionalSingularPrice(expected);
         final MonetaryAmount actual = record.calculatePromotionalCalculatorPrice();
@@ -188,7 +188,7 @@ public class ProductRecordTest {
     }
 
     public void canCalculatePromotionalCalculatorPriceForSingularPriceWithRoundingNeeded() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalSplitPrice(FastMoney.zero(CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.of(345.42949, CURRENCY));
         final MonetaryAmount actual = record.calculatePromotionalCalculatorPrice();
@@ -198,7 +198,7 @@ public class ProductRecordTest {
     }
 
     public void canCalculatePromotionalCalculatorPriceForSplitPriceWithNoRoundingNeeded() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalForX(BigInteger.valueOf(3))
                 .setPromotionalSplitPrice(FastMoney.of(9, CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
@@ -209,7 +209,7 @@ public class ProductRecordTest {
     }
 
     public void canCalculatePromotionalCalculatorPriceForSplitPriceWithRoundingNeeded() {
-        final ProductRecord record = new ProductRecord(null, null, FORMAT, ROUNDING)
+        final ProductRecordImpl record = new ProductRecordImpl(null, null, FORMAT, ROUNDING)
                 .setPromotionalForX(BigInteger.valueOf(3))
                 .setPromotionalSplitPrice(FastMoney.of(10, CURRENCY))
                 .setPromotionalSingularPrice(FastMoney.zero(CURRENCY));
