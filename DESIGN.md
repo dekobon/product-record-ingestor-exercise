@@ -53,7 +53,7 @@ a DI framework for such a simple application because everything could have been
 wired fine using inversion of control. However, DI allowed for the explicit
 configuration of global settings that could be reconfigurable at runtime in a
 clean manner. This was the approach taken for defining the tax rate. See
-[`ProductRecordingIngestorModule`](src/main/java/com/useswiftly/ingestion/product/app/ProductRecordIngestorModule.java) for examples.
+[ProductRecordingIngestorModule](src/main/java/com/useswiftly/ingestion/product/app/ProductRecordIngestorModule.java) for examples.
 
 ### Liberal use of interfaces
 
