@@ -176,3 +176,15 @@ allow for the domain entity to be easily testable in parts without having to
 populate all values. However, this does come with the risk of having to handle
 more potential null values downstream in the application. This is an aspect of
 the design, that I would give more thought to in a production application. 
+
+### Further Improvements
+
+* Adding improved per-line error handling so that a single bad line does
+  cause the application to exit 
+* Adding a logging system like logback that supports SLF4J
+* Adding a proper CLI help system
+* Improving performance for per-line substring parsing - currently
+  there are multiple reads of the same byte buffer per line
+* Allow for configurable character buffer sizes for `BufferedReader` in
+  order to better tune performance
+* Better refine benchmark so that it isn't including `toString()` operations  
