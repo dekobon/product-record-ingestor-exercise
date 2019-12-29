@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.inject.Inject;
 import javax.money.MonetaryAmount;
 import javax.money.format.MonetaryAmountFormat;
+import java.math.BigInteger;
 import java.util.StringJoiner;
 
 /**
@@ -35,7 +36,7 @@ public class ProductRecordFormatter implements RecordFormattable<ProductRecord> 
                 "n/a" : record.getProductSize();
 
         return new StringJoiner(", ", "[", "]")
-                .add("productId=" + record.getProductId())
+                .add("productId=" + formatProductId(record.getProductId()))
                 .add("productDescription='" + record.getProductDescription() + "'")
                 .add("regularDisplayPrice=" + record.regularDisplayPrice())
                 .add("regularCalculatorPrice=" + formatPrice(record.calculateRegularCalculatorPrice()))
@@ -54,5 +55,14 @@ public class ProductRecordFormatter implements RecordFormattable<ProductRecord> 
         }
         // Price formatted to a friendly string with a currency symbol
         return displayPriceFormat.format(amount);
+    }
+
+    @NotNull
+    private String formatProductId(final BigInteger productId) {
+        if (productId == null) {
+            return "null";
+        }
+
+        return String.format("%08d", productId);
     }
 }
