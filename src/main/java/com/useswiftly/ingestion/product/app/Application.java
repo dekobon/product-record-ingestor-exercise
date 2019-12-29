@@ -7,10 +7,16 @@ import com.google.inject.TypeLiteral;
 import com.useswiftly.ingestion.product.ProductRecord;
 import com.useswiftly.ingestion.product.ProductRecordFileParser;
 import com.useswiftly.ingestion.records.RecordFormattable;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,16 +31,15 @@ public class Application {
 
     /**
      * Entry point into the application
-     * @param argv String array with the first element containing the path to the file to parse
+     * @param argv String array with the first element containing the path or URL to the records data
      */
     public static void main(final String[] argv) {
         if (argv.length == 0) {
             System.err.println("com.useswiftly.ingestion.product.app.Application: " +
-                    "The first argument must be the path to the product record data file");
+                    "The first argument must be the path or URL to a valid " +
+                    "product record data file");
             System.exit(1);
         }
-
-        final Path path = openFileAtPath(argv[0]);
 
         /* Interestingly, generic type inference will not work below with the
          * Java 11 compiler. */
@@ -42,7 +47,7 @@ public class Application {
         final RecordFormattable<ProductRecord> formatter = injector.getInstance(
                 Key.get(new TypeLiteral<RecordFormattable<ProductRecord>>() {}));
 
-        try (final Stream<ProductRecord> records = parsePathForRecordsData(path)) {
+        try (final Stream<ProductRecord> records = parseForRecordsData(argv[0])) {
             records.map(formatter::format)
                    .forEach(System.out::println);
 
@@ -50,12 +55,18 @@ public class Application {
              * the specification, we could do the following:
              * records.collect(Collectors.toList()); */
         } catch (Exception e) {
-            System.err.printf("Error processing data file: %s\n", path);
+            System.err.printf("Error processing data file: %s\n", argv[0]);
             e.printStackTrace(System.err);
             System.exit(1);
         }
     }
 
+    /**
+     * Loads the product record stream from the passed NIO path location.
+     *
+     * @param path NIO path location in which to load product record data
+     * @return stream of product records
+     */
     static Stream<ProductRecord> parsePathForRecordsData(final Path path)
             throws IOException {
         final ProductRecordFileParser parser =
@@ -74,6 +85,50 @@ public class Application {
                 e.printStackTrace(System.err);
             }
         });
+    }
+
+    /**
+     * Loads the product record stream from the passed binary input stream.
+     *
+     * @param in input stream containing product record data
+     * @return stream of product records
+     */
+    static Stream<ProductRecord> parseInputStreamForRecordsData(final InputStream in) {
+        final ProductRecordFileParser parser =
+                injector.getInstance(ProductRecordFileParser.class);
+        final Charset charset = injector.getInstance(Charset.class);
+
+        final Reader source = new InputStreamReader(in, charset);
+        final BufferedReader bufferedReader = new BufferedReader(source);
+        final Stream<ProductRecord> records = parser.parse(bufferedReader);
+
+        return records.onClose(() -> {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                System.err.println("Unable to close records stream");
+                e.printStackTrace(System.err);
+            }
+        });
+    }
+
+    /**
+     * Attempts to determine if the passed string is a URL or a local file path
+     * and loads the product record stream from the appropriate data source.
+     *
+     * @param dataLocation URL or local file path to a records data file
+     * @return stream of product records
+     * @throws IOException thrown if there is a problem loading the records data file
+     */
+    static Stream<ProductRecord> parseForRecordsData(@NotNull final String dataLocation)
+            throws IOException {
+        try {
+            final URL url = new URL(dataLocation);
+            return parseInputStreamForRecordsData(url.openStream());
+        } catch (MalformedURLException | IllegalArgumentException e) {
+            final Path path = openFileAtPath(dataLocation);
+            return parsePathForRecordsData(path);
+        }
     }
 
     private static Path openFileAtPath(final String filePath) {

@@ -43,7 +43,7 @@ application using Maven and then execute the JAR file as follows from within
 the project root: 
 
 ```
-$ java -jar ./target/swiftly-exercise-1.0-SNAPSHOT-jar-with-dependencies.jar <path-to-data-file>
+$ java -jar ./target/swiftly-exercise-1.0-SNAPSHOT-jar-with-dependencies.jar <path-or-url-to-data-file>
 ```
 
 #### Running directly from Maven
@@ -52,7 +52,7 @@ To build, test, and execute the application all as a single step, you can run
 the following command in Maven from within the project root:
 
 ```
-$ mvn clean package exec:java -Dexec.args="<path-to-data-file>"
+$ mvn clean package exec:java -Dexec.args="<path-or-url-to-data-file>"
 ```
 
 ## Author
