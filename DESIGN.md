@@ -96,7 +96,19 @@ This approach has the added advantage of supporting the parallelization in the
 future if the per-record parsing computation is a bottleneck. A similar approach
 is used throughout the project [Presto](https://prestodb.io/) where data read
 is streamed into a buffer and multiple parsers simultaneously handle different
-lines. In this model you see multiple CPUs light up nicely.
+lines. In this model you see multiple CPUs light up nicely. I provided some
+level of proof for the claim of a parallel processing model to be more efficient
+within the benchmarking results provided in [ProductRecordParseBenchmark]
+(src/integration/java/com/useswiftly/ingestion/product/app/ProductRecordParseBenchmark.java)
+class. According to that benchmark (which has some flaws - it also records the
+toString() performance per ProductRecord instance), we see a marked improvement
+when using the Java `.parallel()` stream operator:
+
+```
+Benchmark                                    Mode  Cnt  Score   Error  Units
+ProductRecordParseBenchmark.parallelStream  thrpt    5  2.399 ± 0.507  ops/s
+ProductRecordParseBenchmark.singleThreaded  thrpt    5  0.603 ± 0.019  ops/s
+```
 
 ### Decoupling business logic from domain entity logic
 

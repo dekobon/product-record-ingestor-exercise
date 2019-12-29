@@ -21,6 +21,19 @@ From command line, go to the project source directory
 $ mvn clean package verify
 ```
 
+### Running Benchmarks
+
+This repository uses [git-lfs](https://git-lfs.github.com/) to track test data 
+files. You will need to enable git-lfs if you want to access the large test data
+file used for benchmarking.
+
+The easiest way to invoke the benchmark is to run it explicitly using 
+maven failsafe (integration test plugin) by:
+
+```
+mvn -Dit.test=ProductRecordParseBenchmark verify
+```
+
 ### Running the application
 
 #### Running the JAR file
