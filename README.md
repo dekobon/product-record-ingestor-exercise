@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dekobon/product-record-ingestor-exercise.svg?branch=master)](https://travis-ci.org/dekobon/product-record-ingestor-exercise) [![](https://images.microbadger.com/badges/version/dekobon/product-record-ingestor.svg)](https://microbadger.com/images/dekobon/product-record-ingestor "Get your own version badge on microbadger.com")
+[![Build Status](https://travis-ci.org/dekobon/product-record-ingestor-exercise.svg?branch=master)](https://travis-ci.org/dekobon/product-record-ingestor-exercise) [![](https://images.microbadger.com/badges/version/dekobon/product-record-ingestor.svg)](https://microbadger.com/images/dekobon/product-record-ingestor "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/dekobon/product-record-ingestor.svg)](https://microbadger.com/images/dekobon/product-record-ingestor "Get your own image badge on microbadger.com")
 # Product Information Ingestion Library Exercise
 
 ## Overview
