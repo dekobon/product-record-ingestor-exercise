@@ -10,6 +10,25 @@ data (file).
 Business logic for each record is accessible as methods on the ProductRecord
 class.   
 
+```
+  +------------+    Memory Efficient Streaming Parser
+  |Input Source|
+  +-----+------+
+        |
+        |Progressively
+        |read line by
+        |line from source
+        |
+        |           Input source
+        |           is only read
+        |           when another
+        |           record is
++-------v--------+  streamed       +----------------+
+|Streaming Parser+----------------->Stream Iteration|
++----------------+                 |   By Client    |
+                                   +----------------+
+```
+
 ## First Principles
 
 In this project, certain aspects of extensibility have been deliberately 
