@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dekobon/product-record-ingestor-exercise.svg?branch=master)](https://travis-ci.org/dekobon/product-record-ingestor-exercise)
+[![Build Status](https://travis-ci.org/dekobon/product-record-ingestor-exercise.svg?branch=master)](https://travis-ci.org/dekobon/product-record-ingestor-exercise) [![](https://images.microbadger.com/badges/version/dekobon/product-record-ingestor.svg)](https://microbadger.com/images/dekobon/product-record-ingestor "Get your own version badge on microbadger.com")
 # Product Information Ingestion Library Exercise
 
 ## Overview
@@ -34,7 +34,7 @@ maven failsafe (integration test plugin) by:
 mvn -Dit.test=ProductRecordParseBenchmark verify
 ```
 
-### Running the application
+### Running the Application
 
 #### Running the JAR file
 
@@ -54,6 +54,26 @@ the following command in Maven from within the project root:
 ```
 $ mvn clean package exec:java -Dexec.args="<path-or-url-to-data-file>"
 ```
+
+#### Running from Docker
+
+To run the application from Docker, execute Docker with an additional parameter
+specifying the location of the data file:
+
+```
+docker run --rm -it product-record-ingestor '<path-or-url-to-data-file>'
+```
+
+Note that in this example, we execute with `-it` to give us an active terminal 
+in the foreground and with `--rm` to clean up the container after execution has
+finished.
+
+If you want to test out the application with an existing remote data file, you
+can run the following:
+
+```
+docker run --rm -it dekobon/product-record-ingestor 'https://media.githubusercontent.com/media/dekobon/product-record-ingestor-exercise/master/src/integration/resources/large-sample.txt'
+```   
 
 ## Author
 
