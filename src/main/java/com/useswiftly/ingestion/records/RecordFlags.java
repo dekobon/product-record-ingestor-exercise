@@ -1,14 +1,17 @@
 package com.useswiftly.ingestion.records;
 
+import com.google.common.collect.Iterators;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Class that allows for an arbitrary number of boolean values to be logically
  * grouped and accessed by position.
  */
-public class RecordFlags implements PositionalFlags {
+public class RecordFlags implements PositionalFlags, Iterable<Boolean> {
     private final boolean[] values;
 
     @SuppressWarnings("ConstantConditions")
@@ -47,6 +50,29 @@ public class RecordFlags implements PositionalFlags {
         }
 
         values[position] = flag;
+    }
+
+    /**
+     * @return the total number of available flags
+     */
+    public int getSize() {
+        return values.length;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Returns an iterator that wraps a copy of the internal flags array.</p>
+     */
+    @NotNull
+    @Override
+    public Iterator<Boolean> iterator() {
+        final Boolean[] copy = new Boolean[values.length];
+        for (int i = 0; i < values.length; i++) {
+            copy[i] = values[i];
+        }
+
+        return Iterators.forArray(copy);
     }
 
     @Override

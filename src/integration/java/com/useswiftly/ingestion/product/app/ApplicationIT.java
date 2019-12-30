@@ -90,4 +90,34 @@ public class ApplicationIT {
             Assert.assertEquals(actual, expected);
         }
     }
+
+    public void canParseTestFileWithEmptyLines() throws Exception {
+        final ProductRecordFlags marlboroFlags = new ProductRecordFlags();
+        marlboroFlags.setFlagAtPosition(0, true);
+
+        final List<ProductRecord> expected = List.of(
+                instance(80000001, "Kimchi-flavored white rice", 5.67,
+                        0, 0, 0, 0, 0,
+                        false, false, "18oz"),
+                instance(14963801, "Generic Soda 12-pack", 0,
+                        5.49, 13.00, 0, 2, 0,
+                        false, true, "12x12oz"),
+                instance(40123401, "Marlboro Cigarettes", 10.00, 5.49,
+                        0, 0, 0, 0,
+                        marlboroFlags, null),
+                instance(50133333, "Fuji Apples (Organic)", 3.49, 0,
+                        0, 0, 0, 0, true,
+                        false, "lb")
+        );
+
+        final Path recordsFile = Paths.get(ClassLoader.getSystemResource(
+                "input-sample-with-empty-lines.txt").toURI());
+
+        try (Stream<ProductRecord> stream = Application.parsePathForRecordsData(recordsFile)) {
+            final List<ProductRecord> actual =  stream.collect(
+                    Collectors.toUnmodifiableList());
+
+            Assert.assertEquals(actual, expected);
+        }
+    }
 }

@@ -5,6 +5,12 @@ import org.testng.annotations.Test;
 
 @Test
 public class RecordFlagsTest {
+    public void canGetFlagsSize() {
+        final int size = 9;
+        final RecordFlags recordFlags = new RecordFlags(size);
+        Assert.assertEquals(recordFlags.getSize(), size);
+    }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void cantInstantiateWithNegativeLength() {
         new RecordFlags(-1);

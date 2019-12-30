@@ -51,6 +51,9 @@ public class ProductRecordFileParser implements RecordFileParser<ProductRecord> 
         }
 
         final ProductRecordParser recordParser = productRecordParserProvider.get();
-        return bufferedReader.lines().map(recordParser);
+        return bufferedReader.lines()
+                // Skip empty / blank lines
+                .filter(line -> !line.isBlank())
+                .map(recordParser);
     }
 }
