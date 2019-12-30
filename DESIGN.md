@@ -118,14 +118,13 @@ is streamed into a buffer and multiple parsers simultaneously handle different
 lines. In this model you see multiple CPUs light up nicely. I provided some
 level of proof for the claim of a parallel processing model to be more efficient
 within the benchmarking results provided in [ProductRecordParseBenchmark](src/integration/java/com/useswiftly/ingestion/product/app/ProductRecordParseBenchmark.java)
-class. According to that benchmark (which has some flaws - it also records the
-toString() performance per ProductRecord instance), we see a marked improvement
-when using the Java `.parallel()` stream operator:
+class. According to that benchmark, we see a marked improvement when using the 
+Java `.parallel()` stream operator:
 
 ```
 Benchmark                                    Mode  Cnt  Score   Error  Units
-ProductRecordParseBenchmark.parallelStream  thrpt    5  2.399 ± 0.507  ops/s
-ProductRecordParseBenchmark.singleThreaded  thrpt    5  0.603 ± 0.019  ops/s
+ProductRecordParseBenchmark.parallelStream  thrpt    5  14.806 ± 0.749  ops/s
+ProductRecordParseBenchmark.singleThreaded  thrpt    5   4.253 ± 0.179  ops/s
 ```
 
 ### Decoupling business logic from domain entity logic
@@ -187,4 +186,3 @@ the design, that I would give more thought to in a production application.
   there are multiple reads of the same byte buffer per line
 * Allow for configurable character buffer sizes for `BufferedReader` in
   order to better tune performance
-* Better refine benchmark so that it isn't including `toString()` operations  
