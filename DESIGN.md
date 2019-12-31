@@ -186,3 +186,13 @@ the design, that I would give more thought to in a production application.
   there are multiple reads of the same byte buffer per line
 * Allow for configurable character buffer sizes for `BufferedReader` in
   order to better tune performance
+* Move formatting of display prices outside of `ProductRecordImpl` into a 
+  localization aware resource. This would allow for flexible redefinition of
+  how the display price is formatted.
+* Encapsulate `*displayPrice` and `calculate*CalculatorPrice`  methods as lambdas
+  and allow them to be injected into `ProductRecordImpl` if there is a driving
+  need to separate that logic from the domain entity.
+* Tune the `ProductRecord` implementation to match the object relational mapping
+  used for persistence. This implementation favors a domain entity model and
+  by such a choice doesn't optimize for some persistence models. For more a
+  better discussion on the trade-offs see [here](https://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model). 
