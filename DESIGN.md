@@ -178,6 +178,9 @@ the design, that I would give more thought to in a production application.
 
 ### Further Improvements
 
+* Add more javadocs and package-info docs.
+* Slim down the Docker image by using the new Java modules system to have a
+  lightweight JVM in conjunction with using an Alpine base image.
 * Adding improved per-line error handling so that a single bad line does
   cause the application to exit 
 * Adding a logging system like logback that supports SLF4J
