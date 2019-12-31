@@ -9,8 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
- * @since 3.0.0
+ * Interface that represents a single product record and its expected behavior.
  */
 public interface ProductRecord extends Record {
     @Nullable BigInteger getProductId();
