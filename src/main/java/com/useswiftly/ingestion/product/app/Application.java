@@ -20,6 +20,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
 /**
@@ -64,31 +65,25 @@ public class Application {
     /**
      * Loads the product record stream from the passed NIO path location.
      *
+     * <p><strong>Note:</strong> Be sure to close the stream when finished
+     * because there are resources associated with the stream that need to be
+     * closed.</p>
+     *
      * @param path NIO path location in which to load product record data
      * @return stream of product records
      */
     static Stream<ProductRecord> parsePathForRecordsData(final Path path)
             throws IOException {
-        final ProductRecordFileParser parser =
-                injector.getInstance(ProductRecordFileParser.class);
-        final Charset charset = injector.getInstance(Charset.class);
-
-        final Reader source = Files.newBufferedReader(path, charset);
-        final Stream<ProductRecord> records = parser.parse(source);
-
-        return records.onClose(() -> {
-            try {
-                source.close();
-            } catch (IOException e) {
-                System.err.printf("Unable to close records at path: %s\n",
-                        path);
-                e.printStackTrace(System.err);
-            }
-        });
+        // All linked resources are closed when the stream is closed
+        final InputStream in = Files.newInputStream(path, StandardOpenOption.READ);
+        return parseInputStreamForRecordsData(in);
     }
 
     /**
      * Loads the product record stream from the passed binary input stream.
+     *
+     * <p><strong>Note:</strong> The passed {@link InputStream} will be closed
+     * when the returned {@link Stream} is closed.
      *
      * @param in input stream containing product record data
      * @return stream of product records
@@ -98,6 +93,7 @@ public class Application {
                 injector.getInstance(ProductRecordFileParser.class);
         final Charset charset = injector.getInstance(Charset.class);
 
+        // All linked resources are closed when the stream is closed
         final Reader source = new InputStreamReader(in, charset);
         final BufferedReader bufferedReader = new BufferedReader(source);
         final Stream<ProductRecord> records = parser.parse(bufferedReader);
