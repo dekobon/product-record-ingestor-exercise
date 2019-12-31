@@ -18,7 +18,7 @@ RUN groupadd -g 1244 product-record-ingestor && \
 
 ADD --chown=product-record-ingestor:product-record-ingestor "https://github.com/dekobon/product-record-ingestor-exercise/releases/download/$VERSION/swiftly-exercise-$VERSION-jar-with-dependencies.jar" /opt/product-record-ingestor/swiftly-exercise.jar
 
-RUN echo 'f7b62bde092d93de4c61a10d9e7496f1840a0cd2a0b35e3468aed8887960b5cb  /opt/product-record-ingestor/swiftly-exercise.jar' | sha256sum -c
+RUN echo '389c4036770f6b7ab1d0cdd4859250ec11ad3460c594b232ceac4dc2e29fe491  /opt/product-record-ingestor/swiftly-exercise.jar' | sha256sum -c
 
 WORKDIR /opt/product-record-ingestor
 USER product-record-ingestor
